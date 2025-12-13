@@ -46,7 +46,7 @@ const AddCourseModal = ({ onClose }) => {
     if (!formData.title.trim()) newErrors.title = 'Course title is required';
     if (!formData.instructor.trim()) newErrors.instructor = 'Instructor name is required';
     if (!formData.provider.trim()) newErrors.provider = 'Provider is required';
-    if (!formData.price || formData.price <= 0) newErrors.price = 'Valid price is required';
+    if (formData.price && formData.price < 0) newErrors.price = 'Price cannot be negative';
     if (!formData.duration.trim()) newErrors.duration = 'Duration is required';
     if (!formData.description.trim()) newErrors.description = 'Description is required';
     if (formData.description.length < 50) newErrors.description = 'Description must be at least 50 characters';

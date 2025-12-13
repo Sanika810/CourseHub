@@ -17,7 +17,7 @@ const courseSchema = new mongoose.Schema({
   description: { type: String, required: true },
   instructor: { type: String, required: true },
   provider: { type: String, required: true },
-  price: { type: Number, required: true },
+  price: { type: Number, default: 0 },
   currency: { type: String, default: 'USD' },
   duration: { type: String, required: true },
   level: { type: String, enum: ['Beginner', 'Intermediate', 'Advanced'], required: true },
@@ -46,8 +46,18 @@ const courseSchema = new mongoose.Schema({
   lastUpdated: { type: Date, default: Date.now }
 });
 
-// Auto-assign thumbnail based on category
+// Combined pre-save middleware - handles BOTH free tag and thumbnail
 courseSchema.pre('save', function(next) {
+  // 1. Handle the Free tag logic FIRST
+  if ((!this.price || this.price === 0) && !this.tags.includes('Free')) {
+    this.tags.unshift('Free');
+  }
+  // Optional: Remove 'Free' tag if price becomes > 0 (uncomment if needed)
+  // else if (this.price > 0 && this.tags.includes('Free')) {
+  //   this.tags = this.tags.filter(tag => tag !== 'Free');
+  // }
+  
+  // 2. Handle the thumbnail logic SECOND (can now use updated tags)
   if (!this.thumbnail || this.thumbnail === '') {
     // Find matching category
     const mainCategory = this.tags && this.tags.length > 0 
@@ -71,6 +81,7 @@ courseSchema.pre('save', function(next) {
   next();
 });
 
+// Text index for search functionality
 courseSchema.index({ title: 'text', description: 'text', tags: 'text' });
 
 module.exports = mongoose.model('Course', courseSchema);

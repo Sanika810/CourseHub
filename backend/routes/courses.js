@@ -104,6 +104,7 @@ router.post('/', auth, async (req, res) => {
     
     const courseData = {
       ...req.body,
+      price: req.body.price && !isNaN(req.body.price) && req.body.price >= 0 ? Number(req.body.price) : 0,
       submittedBy: req.userId,
       status: req.userRole === 'admin' ? 'approved' : 'pending',
       rating: req.body.rating || 0,

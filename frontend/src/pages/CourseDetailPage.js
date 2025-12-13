@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-  Star, Check, Clock, BookOpen, Award, Play, Users, 
-  Heart, ChevronLeft, MessageSquare, DollarSign, BarChart3, 
+import {
+  Star, Check, Clock, BookOpen, Award, Play, Users,
+  Heart, ChevronLeft, MessageSquare, DollarSign, BarChart3,
   Globe, User, ThumbsUp, Flag, ExternalLink, X, RefreshCw, Trash2
 } from 'lucide-react';
 import { useCourses } from '../context/CourseContext';
@@ -13,19 +13,19 @@ import config from "../config";
 const CourseDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { 
-    savedCourses: savedCourseIds, 
-    toggleSaveCourse, 
-    submitReview, 
+  const {
+    savedCourses: savedCourseIds,
+    toggleSaveCourse,
+    submitReview,
     getCourseById,
     approveCourse,
     rejectCourse,
     updateCourseStatus,
     deleteCourse,
-    refreshCourse 
+    refreshCourse
   } = useCourses();
   const { user } = useAuth();
-  
+
   const [course, setCourse] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,13 +47,13 @@ const CourseDetailPage = () => {
     const fetchCourseData = async () => {
       try {
         setLoading(true);
-        
+
         // Use the context method or direct API call
         const courseData = await getCourseById(id);
-        
+
         if (courseData) {
           setCourse(courseData);
-          
+
           // Fetch reviews separately
           const reviewsResponse = await axios.get(`${config.API_BASE_URL}/api/courses/${id}`);
           if (reviewsResponse.data.reviews) {
@@ -88,7 +88,7 @@ const CourseDetailPage = () => {
 
     try {
       const result = await submitReview(id, userReview);
-      
+
       if (result.success) {
         setReviewSuccess('Review submitted successfully!');
         setUserReview({
@@ -100,12 +100,12 @@ const CourseDetailPage = () => {
           pros: '',
           cons: ''
         });
-        
+
         // Update reviews list
         if (result.reviews) {
           setReviews(result.reviews);
         }
-        
+
         // Update course rating
         if (result.course) {
           setCourse(prev => ({
@@ -162,7 +162,7 @@ const CourseDetailPage = () => {
     setAdminActionLoading(true);
     try {
       let result;
-      
+
       if (action === 'approve') {
         result = await approveCourse(id);
       } else if (action === 'reject') {
@@ -226,7 +226,7 @@ const CourseDetailPage = () => {
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-white mb-4">Course not found</h2>
-          <button 
+          <button
             onClick={() => navigate('/')}
             className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg"
           >
@@ -243,8 +243,8 @@ const CourseDetailPage = () => {
     <div className="min-h-screen bg-gray-900 pb-12">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Back Button */}
-        <button 
-          onClick={() => navigate('/')} 
+        <button
+          onClick={() => navigate('/')}
           className="text-purple-500 hover:text-purple-400 mb-6 flex items-center space-x-2 transition"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -256,35 +256,34 @@ const CourseDetailPage = () => {
           <div className="lg:col-span-2">
             {/* Course Thumbnail */}
             <div className="bg-gray-800 rounded-xl overflow-hidden mb-6">
-              <img 
-                src={course.thumbnail} 
-                alt={course.title} 
+              <img
+                src={course.thumbnail}
+                alt={course.title}
                 className="w-full h-96 object-cover"
               />
             </div>
 
-            {/* Course Header */}
+            {/* Course Header - FIXED LAYOUT */}
             <div className="mb-6">
+              {/* Title Row - Separate from description */}
               <div className="flex items-start justify-between mb-4">
-                <div>
+                <div className="flex-1">
                   <h1 className="text-4xl font-bold text-white mb-2">{course.title}</h1>
-                  <p className="text-xl text-gray-300">{course.description}</p>
                 </div>
-                <div className="flex flex-col items-end space-y-2">
-                  <button 
+                <div className="flex flex-col items-end space-y-2 ml-4 flex-shrink-0">
+                  <button
                     onClick={handleSaveCourse}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg border-2 transition ${
-                      isSaved
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg border-2 transition ${isSaved
                         ? 'border-red-500 text-red-500 hover:bg-red-500 hover:text-white'
                         : 'border-purple-500 text-purple-500 hover:bg-purple-500 hover:text-white'
-                    }`}
+                      }`}
                   >
                     <Heart className={`w-5 h-5 ${isSaved ? 'fill-red-500' : ''}`} />
                     <span>{isSaved ? 'Saved' : 'Save'}</span>
                   </button>
-                  
+
                   {user?.role === 'admin' && (
-                    <button 
+                    <button
                       onClick={handleRefreshCourse}
                       disabled={adminActionLoading}
                       className="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition disabled:opacity-50"
@@ -296,8 +295,14 @@ const CourseDetailPage = () => {
                 </div>
               </div>
 
+              {/* Description Row - Full width below title and buttons */}
+              <div className="mt-4">
+                <p className="text-xl text-gray-300 break-words">{course.description}</p>
+              </div>
+
+              {/* Rest of the code remains the same... */}
               {/* Instructor Info */}
-              <div className="flex items-center space-x-4 mb-6 p-4 bg-gray-800 rounded-lg">
+              <div className="flex items-center space-x-4 mt-6 p-4 bg-gray-800 rounded-lg">
                 <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center text-white text-xl font-bold">
                   {course.instructor?.charAt(0) || 'I'}
                 </div>
@@ -310,7 +315,7 @@ const CourseDetailPage = () => {
 
               {/* Submitted By Info */}
               {course.submittedBy && (
-                <div className="mb-6 p-4 bg-gray-800 rounded-lg">
+                <div className="mt-6 p-4 bg-gray-800 rounded-lg">
                   <div className="flex items-center space-x-3">
                     <User className="w-5 h-5 text-gray-400" />
                     <div>
@@ -324,14 +329,13 @@ const CourseDetailPage = () => {
               )}
 
               {/* Course Status Badge */}
-              <div className="mb-6">
-                <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold ${
-                  course.status === 'approved' 
-                    ? 'bg-green-900 text-green-300 border border-green-700' 
+              <div className="mt-6">
+                <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold ${course.status === 'approved'
+                    ? 'bg-green-900 text-green-300 border border-green-700'
                     : course.status === 'pending'
-                    ? 'bg-yellow-900 text-yellow-300 border border-yellow-700'
-                    : 'bg-red-900 text-red-300 border border-red-700'
-                }`}>
+                      ? 'bg-yellow-900 text-yellow-300 border border-yellow-700'
+                      : 'bg-red-900 text-red-300 border border-red-700'
+                  }`}>
                   {course.status === 'pending' && <Clock className="w-4 h-4 mr-2" />}
                   {course.status === 'approved' && <Check className="w-4 h-4 mr-2" />}
                   {course.status === 'rejected' && <X className="w-4 h-4 mr-2" />}
@@ -357,11 +361,10 @@ const CourseDetailPage = () => {
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`pb-4 text-sm font-medium capitalize whitespace-nowrap ${
-                      activeTab === tab 
-                        ? 'text-purple-500 border-b-2 border-purple-500' 
-                        : 'text-gray-400 hover:text-white'
-                    }`}
+                    className={`pb-4 text-sm font-medium capitalize whitespace-nowrap ${activeTab === tab
+                      ? 'text-purple-500 border-b-2 border-purple-500'
+                      : 'text-gray-400 hover:text-white'
+                      }`}
                   >
                     {tab}
                   </button>
@@ -420,8 +423,8 @@ const CourseDetailPage = () => {
                     <h4 className="text-lg font-semibold text-white mb-3">Tags</h4>
                     <div className="flex flex-wrap gap-2">
                       {course.tags?.map((tag, idx) => (
-                        <span 
-                          key={idx} 
+                        <span
+                          key={idx}
                           className="bg-gray-700 text-gray-300 px-3 py-1 rounded-full text-sm"
                         >
                           {tag}
@@ -433,7 +436,12 @@ const CourseDetailPage = () => {
                   {/* Course Description */}
                   <div className="mt-8">
                     <h4 className="text-lg font-semibold text-white mb-3">Full Description</h4>
-                    <p className="text-gray-300 whitespace-pre-line">{course.description}</p>
+                    {/* FIXED: Added break-words and overflow-wrap */}
+                    <div className="bg-gray-750 rounded-lg p-4">
+                      <p className="text-gray-300 whitespace-pre-line break-words overflow-wrap-anywhere">
+                        {course.description}
+                      </p>
+                    </div>
                   </div>
                 </>
               )}
@@ -443,7 +451,7 @@ const CourseDetailPage = () => {
                   {/* Rating Overview */}
                   <div className="bg-gray-750 rounded-lg p-6">
                     <h3 className="text-2xl font-bold text-white mb-6">Student Feedback</h3>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                       {/* Overall Rating */}
                       <div className="text-center">
@@ -451,14 +459,13 @@ const CourseDetailPage = () => {
                           {course.rating?.toFixed(1) || '0.0'}
                         </div>
                         <div className="flex justify-center mb-2">
-                          {[1,2,3,4,5].map(star => (
-                            <Star 
-                              key={star} 
-                              className={`w-6 h-6 ${
-                                star <= Math.round(course.rating || 0) 
-                                  ? 'fill-yellow-400 text-yellow-400' 
-                                  : 'text-gray-600'
-                              }`} 
+                          {[1, 2, 3, 4, 5].map(star => (
+                            <Star
+                              key={star}
+                              className={`w-6 h-6 ${star <= Math.round(course.rating || 0)
+                                ? 'fill-yellow-400 text-yellow-400'
+                                : 'text-gray-600'
+                                }`}
                             />
                           ))}
                         </div>
@@ -469,16 +476,16 @@ const CourseDetailPage = () => {
 
                       {/* Rating Distribution */}
                       <div className="space-y-3">
-                        {[5,4,3,2,1].map(stars => (
+                        {[5, 4, 3, 2, 1].map(stars => (
                           <div key={stars} className="flex items-center space-x-3">
                             <span className="text-sm text-gray-400 w-12">
                               {stars} stars
                             </span>
                             <div className="flex-1 h-3 bg-gray-700 rounded-full overflow-hidden">
-                              <div 
+                              <div
                                 className="h-full bg-yellow-400 rounded-full transition-all"
-                                style={{ 
-                                  width: `${course.ratingBreakdown?.[stars] || 0}%` 
+                                style={{
+                                  width: `${course.ratingBreakdown?.[stars] || 0}%`
                                 }}
                               />
                             </div>
@@ -496,9 +503,9 @@ const CourseDetailPage = () => {
                         <div className="text-sm text-gray-400 mb-2">Content Quality</div>
                         <div className="flex items-center space-x-2">
                           <div className="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-green-500 rounded-full" 
-                              style={{width: `${((course.contentQuality || 0)/5)*100}%`}} 
+                            <div
+                              className="h-full bg-green-500 rounded-full"
+                              style={{ width: `${((course.contentQuality || 0) / 5) * 100}%` }}
                             />
                           </div>
                           <span className="text-white font-semibold">
@@ -510,9 +517,9 @@ const CourseDetailPage = () => {
                         <div className="text-sm text-gray-400 mb-2">Instructor Quality</div>
                         <div className="flex items-center space-x-2">
                           <div className="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-blue-500 rounded-full" 
-                              style={{width: `${((course.instructorQuality || 0)/5)*100}%`}} 
+                            <div
+                              className="h-full bg-blue-500 rounded-full"
+                              style={{ width: `${((course.instructorQuality || 0) / 5) * 100}%` }}
                             />
                           </div>
                           <span className="text-white font-semibold">
@@ -524,9 +531,9 @@ const CourseDetailPage = () => {
                         <div className="text-sm text-gray-400 mb-2">Value for Money</div>
                         <div className="flex items-center space-x-2">
                           <div className="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-purple-500 rounded-full" 
-                              style={{width: `${((course.valueForMoney || 0)/5)*100}%`}} 
+                            <div
+                              className="h-full bg-purple-500 rounded-full"
+                              style={{ width: `${((course.valueForMoney || 0) / 5) * 100}%` }}
                             />
                           </div>
                           <span className="text-white font-semibold">
@@ -543,32 +550,31 @@ const CourseDetailPage = () => {
                       <MessageSquare className="w-5 h-5 mr-2" />
                       Write a Review
                     </h3>
-                    
+
                     {reviewSuccess && (
                       <div className="mb-4 bg-green-900 bg-opacity-50 border border-green-700 text-green-200 px-4 py-3 rounded-lg">
                         {reviewSuccess}
                       </div>
                     )}
-                    
+
                     <div className="space-y-4">
                       <div>
                         <label className="text-sm text-gray-400 mb-2 block">
                           Overall Rating
                         </label>
                         <div className="flex space-x-2">
-                          {[1,2,3,4,5].map(star => (
-                            <button 
-                              key={star} 
+                          {[1, 2, 3, 4, 5].map(star => (
+                            <button
+                              key={star}
                               type="button"
-                              onClick={() => setUserReview({...userReview, rating: star})}
+                              onClick={() => setUserReview({ ...userReview, rating: star })}
                               className="hover:scale-110 transition-transform"
                             >
-                              <Star 
-                                className={`w-8 h-8 cursor-pointer ${
-                                  star <= userReview.rating 
-                                    ? 'fill-yellow-400 text-yellow-400' 
-                                    : 'text-gray-600'
-                                }`} 
+                              <Star
+                                className={`w-8 h-8 cursor-pointer ${star <= userReview.rating
+                                  ? 'fill-yellow-400 text-yellow-400'
+                                  : 'text-gray-600'
+                                  }`}
                               />
                             </button>
                           ))}
@@ -580,16 +586,16 @@ const CourseDetailPage = () => {
                           <label className="text-sm text-gray-400 mb-2 block">
                             Content Quality
                           </label>
-                          <select 
+                          <select
                             value={userReview.contentQuality}
                             onChange={(e) => setUserReview({
-                              ...userReview, 
+                              ...userReview,
                               contentQuality: Number(e.target.value)
                             })}
                             className="w-full bg-gray-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
                           >
-                            {[1,2,3,4,5].map(n => (
-                              <option key={n} value={n}>{n} Star{n>1?'s':''}</option>
+                            {[1, 2, 3, 4, 5].map(n => (
+                              <option key={n} value={n}>{n} Star{n > 1 ? 's' : ''}</option>
                             ))}
                           </select>
                         </div>
@@ -597,16 +603,16 @@ const CourseDetailPage = () => {
                           <label className="text-sm text-gray-400 mb-2 block">
                             Instructor Quality
                           </label>
-                          <select 
+                          <select
                             value={userReview.instructorQuality}
                             onChange={(e) => setUserReview({
-                              ...userReview, 
+                              ...userReview,
                               instructorQuality: Number(e.target.value)
                             })}
                             className="w-full bg-gray-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
                           >
-                            {[1,2,3,4,5].map(n => (
-                              <option key={n} value={n}>{n} Star{n>1?'s':''}</option>
+                            {[1, 2, 3, 4, 5].map(n => (
+                              <option key={n} value={n}>{n} Star{n > 1 ? 's' : ''}</option>
                             ))}
                           </select>
                         </div>
@@ -614,16 +620,16 @@ const CourseDetailPage = () => {
                           <label className="text-sm text-gray-400 mb-2 block">
                             Value for Money
                           </label>
-                          <select 
+                          <select
                             value={userReview.valueForMoney}
                             onChange={(e) => setUserReview({
-                              ...userReview, 
+                              ...userReview,
                               valueForMoney: Number(e.target.value)
                             })}
                             className="w-full bg-gray-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
                           >
-                            {[1,2,3,4,5].map(n => (
-                              <option key={n} value={n}>{n} Star{n>1?'s':''}</option>
+                            {[1, 2, 3, 4, 5].map(n => (
+                              <option key={n} value={n}>{n} Star{n > 1 ? 's' : ''}</option>
                             ))}
                           </select>
                         </div>
@@ -636,7 +642,7 @@ const CourseDetailPage = () => {
                           </label>
                           <textarea
                             value={userReview.pros}
-                            onChange={(e) => setUserReview({...userReview, pros: e.target.value})}
+                            onChange={(e) => setUserReview({ ...userReview, pros: e.target.value })}
                             placeholder="What did you like about this course?"
                             className="w-full bg-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 min-h-20"
                           />
@@ -647,7 +653,7 @@ const CourseDetailPage = () => {
                           </label>
                           <textarea
                             value={userReview.cons}
-                            onChange={(e) => setUserReview({...userReview, cons: e.target.value})}
+                            onChange={(e) => setUserReview({ ...userReview, cons: e.target.value })}
                             placeholder="What could be improved?"
                             className="w-full bg-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 min-h-20"
                           />
@@ -660,14 +666,14 @@ const CourseDetailPage = () => {
                         </label>
                         <textarea
                           value={userReview.text}
-                          onChange={(e) => setUserReview({...userReview, text: e.target.value})}
+                          onChange={(e) => setUserReview({ ...userReview, text: e.target.value })}
                           placeholder="Share your detailed experience with this course..."
-                          className="w-full bg-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 min-h-32"
+                          className="w-full bg-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 min-h-32 break-words"
                           required
                         />
                       </div>
 
-                      <button 
+                      <button
                         onClick={handleReviewSubmit}
                         disabled={reviewLoading || !user}
                         className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
@@ -684,7 +690,7 @@ const CourseDetailPage = () => {
                           'Submit Review'
                         )}
                       </button>
-                      
+
                       {!user && (
                         <p className="text-yellow-400 text-sm">
                           Please login to submit a review
@@ -698,7 +704,7 @@ const CourseDetailPage = () => {
                     <h3 className="text-xl font-bold text-white">
                       Student Reviews ({reviews.length})
                     </h3>
-                    
+
                     {reviews.length === 0 ? (
                       <div className="text-center py-8 bg-gray-750 rounded-lg">
                         <MessageSquare className="w-12 h-12 text-gray-600 mx-auto mb-3" />
@@ -726,23 +732,23 @@ const CourseDetailPage = () => {
                               <span className="text-white font-semibold">{review.rating}</span>
                             </div>
                           </div>
-                          
+
                           {review.text && (
-                            <p className="text-gray-300 mb-3">{review.text}</p>
+                            <p className="text-gray-300 mb-3 break-words">{review.text}</p>
                           )}
-                          
+
                           {(review.pros || review.cons) && (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                               {review.pros && (
                                 <div>
                                   <div className="text-sm text-green-400 font-medium mb-1">Pros</div>
-                                  <p className="text-sm text-gray-300">{review.pros}</p>
+                                  <p className="text-sm text-gray-300 break-words">{review.pros}</p>
                                 </div>
                               )}
                               {review.cons && (
                                 <div>
                                   <div className="text-sm text-red-400 font-medium mb-1">Cons</div>
-                                  <p className="text-sm text-gray-300">{review.cons}</p>
+                                  <p className="text-sm text-gray-300 break-words">{review.cons}</p>
                                 </div>
                               )}
                             </div>
@@ -820,15 +826,15 @@ const CourseDetailPage = () => {
                 <div className="text-sm text-gray-400 mb-4">
                   {course.provider === 'Udemy' ? 'Frequently on sale' : 'One-time payment'}
                 </div>
-                
-                <button 
+
+                <button
                   onClick={handleEnroll}
                   className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-4 rounded-lg mb-3 transition flex items-center justify-center"
                 >
                   <ExternalLink className="w-5 h-5 mr-2" />
                   Enroll Now on {course.provider}
                 </button>
-                
+
                 <div className="text-center text-sm text-gray-400">
                   30-day money-back guarantee
                 </div>
@@ -885,25 +891,24 @@ const CourseDetailPage = () => {
                   </div>
                   <div>
                     <div className="text-sm text-gray-400 mb-1">Status</div>
-                    <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
-                      course.status === 'approved' 
-                        ? 'bg-green-900 text-green-300' 
-                        : course.status === 'pending'
+                    <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${course.status === 'approved'
+                      ? 'bg-green-900 text-green-300'
+                      : course.status === 'pending'
                         ? 'bg-yellow-900 text-yellow-300'
                         : 'bg-red-900 text-red-300'
-                    }`}>
+                      }`}>
                       {course.status?.toUpperCase()}
                     </div>
                   </div>
                   <div>
                     <div className="text-sm text-gray-400 mb-1">Enrollment URL</div>
-                    <a 
-                      href={course.url} 
-                      target="_blank" 
+                    <a
+                      href={course.url}
+                      target="_blank"
                       rel="noopener noreferrer"
-                      className="text-purple-400 hover:text-purple-300 text-sm truncate block"
+                      className="text-purple-400 hover:text-purple-300 text-sm truncate block break-all"
                     >
-                      {course.url ? 'Click to enroll' : 'Not available'}
+                      {course.url ? course.url : 'Not available'}
                     </a>
                   </div>
                 </div>
@@ -916,7 +921,7 @@ const CourseDetailPage = () => {
                   <div className="space-y-3">
                     {course.status === 'pending' && (
                       <>
-                        <button 
+                        <button
                           onClick={() => handleAdminAction('approve')}
                           disabled={adminActionLoading}
                           className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition flex items-center justify-center disabled:opacity-50"
@@ -924,7 +929,7 @@ const CourseDetailPage = () => {
                           <Check className="w-5 h-5 mr-2" />
                           Approve Course
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleAdminAction('reject')}
                           disabled={adminActionLoading}
                           className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg transition flex items-center justify-center disabled:opacity-50"
@@ -934,8 +939,8 @@ const CourseDetailPage = () => {
                         </button>
                       </>
                     )}
-                    
-                    <button 
+
+                    <button
                       onClick={() => {
                         const newStatus = prompt('Enter new status (approved/rejected/pending):');
                         if (newStatus && ['approved', 'rejected', 'pending'].includes(newStatus)) {
@@ -950,8 +955,8 @@ const CourseDetailPage = () => {
                       <RefreshCw className="w-5 h-5 mr-2" />
                       Update Status
                     </button>
-                    
-                    <button 
+
+                    <button
                       onClick={() => handleAdminAction('delete')}
                       disabled={adminActionLoading}
                       className="w-full bg-gray-600 hover:bg-gray-500 text-white font-semibold py-3 rounded-lg transition flex items-center justify-center disabled:opacity-50"

@@ -102,7 +102,7 @@ const HomePage = () => {
   const fetchRealStats = useCallback(async () => {
     try {
       // Use public stats endpoint
-      const statsResponse = await axios.get('${config.API_BASE_URL}/api/admin/public-stats');
+      const statsResponse = await axios.get(`${config.API_BASE_URL}/api/admin/public-stats`);
       
       if (statsResponse.data) {
         setStats(statsResponse.data);

@@ -28,12 +28,12 @@ export const CourseProvider = ({ children }) => {
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('${config.API_BASE_URL}/api/courses');
+      const response = await axios.get(`${config.API_BASE_URL}/api/courses`);
       setCourses(response.data);
       
       // Fetch stats
       if (user?.role === 'admin') {
-        const statsResponse = await axios.get('${config.API_BASE_URL}/api/admin/stats', {
+        const statsResponse = await axios.get(`${config.API_BASE_URL}/api/admin/stats`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         setStats(statsResponse.data);
@@ -49,7 +49,7 @@ export const CourseProvider = ({ children }) => {
     if (!user) return;
     
     try {
-      const response = await axios.get('${config.API_BASE_URL}/api/courses/user/saved', {
+      const response = await axios.get(`${config.API_BASE_URL}/api/courses/user/saved`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       // Store only the IDs for quick lookup
@@ -64,7 +64,7 @@ export const CourseProvider = ({ children }) => {
     if (!user || user.role !== 'admin') return;
     
     try {
-      const response = await axios.get('${config.API_BASE_URL}/api/admin/pending-courses', {
+      const response = await axios.get(`${config.API_BASE_URL}/api/admin/pending-courses`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       setPendingCourses(response.data);
@@ -99,7 +99,7 @@ export const CourseProvider = ({ children }) => {
 
   const submitCourse = async (courseData) => {
     try {
-      const response = await axios.post('${config.API_BASE_URL}/api/courses', courseData, {
+      const response = await axios.post(`${config.API_BASE_URL}/api/courses`, courseData, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       

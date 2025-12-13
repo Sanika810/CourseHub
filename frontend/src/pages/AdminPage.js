@@ -35,7 +35,7 @@ const AdminPage = () => {
     if (!user) return;
     
     try {
-      const response = await axios.get('${config.API_BASE_URL}/api/notifications', {
+      const response = await axios.get(`${config.API_BASE_URL}/api/notifications`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       if (response.data.success) {

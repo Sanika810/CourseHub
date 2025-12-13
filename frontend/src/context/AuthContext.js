@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     try {
-      const response = await axios.post('${config.API_BASE_URL}/api/auth/register', {
+      const response = await axios.post(`${config.API_BASE_URL}/api/auth/register`, {
         name,
         email,
         password
@@ -75,7 +75,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post('${config.API_BASE_URL}/api/auth/login', {
+      const response = await axios.post(`${config.API_BASE_URL}/api/auth/login`, {
         email,
         password
       });
@@ -111,7 +111,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       // Call logout endpoint
-      await axios.post('${config.API_BASE_URL}/api/auth/logout');
+      await axios.post(`${config.API_BASE_URL}/api/auth/logout`);
     } catch (error) {
       console.error('Logout error:', error);
     } finally {

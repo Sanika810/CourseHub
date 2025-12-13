@@ -55,7 +55,7 @@ const NavBar = ({ onAddCourse, onCourseAction = null }) => {
     if (!user) return;
     
     try {
-      const response = await axios.get('${config.API_BASE_URL}/api/notifications', {
+      const response = await axios.get(`${config.API_BASE_URL}/api/notifications`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       if (response.data.success) {
@@ -98,7 +98,7 @@ const NavBar = ({ onAddCourse, onCourseAction = null }) => {
   const markAllAsRead = async () => {
     try {
       await axios.post(
-        '${config.API_BASE_URL}/api/notifications/read-all',
+        `${config.API_BASE_URL}/api/notifications/read-all`,
         {},
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );

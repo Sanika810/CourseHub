@@ -19,11 +19,10 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://YOUR-FRONTEND-URL.onrender.com'  // Add this after deploying frontend
+    'https://YOUR-FRONTEND-URL.onrender.com' // Add after frontend deployed
   ],
   credentials: true
 }));
-
 // Helper function to create notifications
 const createNotification = async (userId, type, title, message, data = {}) => {
   try {

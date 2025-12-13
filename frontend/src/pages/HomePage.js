@@ -4,6 +4,7 @@ import { Search, BookOpen, Users, Award, TrendingUp, Filter, ChevronDown, Star, 
 import CourseCard from '../components/CourseCard';
 import { useCourses } from '../context/CourseContext';
 import axios from 'axios';
+import config from "../config";
 
 const HomePage = () => {
   const { courses, loading } = useCourses();
@@ -101,7 +102,7 @@ const HomePage = () => {
   const fetchRealStats = useCallback(async () => {
     try {
       // Use public stats endpoint
-      const statsResponse = await axios.get('http://localhost:5000/api/admin/public-stats');
+      const statsResponse = await axios.get('${config.API_BASE_URL}/api/admin/public-stats');
       
       if (statsResponse.data) {
         setStats(statsResponse.data);

@@ -3,6 +3,7 @@ import { Check, Trash2, AlertCircle, Users, BookOpen, Award, TrendingUp, X, Bell
 import { useCourses } from '../context/CourseContext';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import config from "../config";
 
 const AdminPage = () => {
   const { 
@@ -34,7 +35,7 @@ const AdminPage = () => {
     if (!user) return;
     
     try {
-      const response = await axios.get('http://localhost:5000/api/notifications', {
+      const response = await axios.get('${config.API_BASE_URL}/api/notifications', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       if (response.data.success) {

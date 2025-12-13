@@ -4,6 +4,7 @@ import { Plus, Bell, User, LogOut, Menu, X, Home, BookOpen, Shield, RefreshCw } 
 import { useAuth } from '../context/AuthContext';
 import { useCourses } from '../context/CourseContext';
 import axios from 'axios';
+import config from "../config";
 
 const NavBar = ({ onAddCourse, onCourseAction = null }) => {
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ const NavBar = ({ onAddCourse, onCourseAction = null }) => {
     if (!user) return;
     
     try {
-      const response = await axios.get('http://localhost:5000/api/notifications', {
+      const response = await axios.get('${config.API_BASE_URL}/api/notifications', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       if (response.data.success) {
@@ -79,7 +80,7 @@ const NavBar = ({ onAddCourse, onCourseAction = null }) => {
   const markAsRead = async (notificationId) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/notifications/${notificationId}/read`,
+        `${config.API_BASE_URL}/api/notifications/${notificationId}/read`,
         {},
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
@@ -97,7 +98,7 @@ const NavBar = ({ onAddCourse, onCourseAction = null }) => {
   const markAllAsRead = async () => {
     try {
       await axios.post(
-        'http://localhost:5000/api/notifications/read-all',
+        '${config.API_BASE_URL}/api/notifications/read-all',
         {},
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );

@@ -8,6 +8,7 @@ import {
 import { useCourses } from '../context/CourseContext';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import config from "../config";
 
 const CourseDetailPage = () => {
   const { id } = useParams();
@@ -54,7 +55,7 @@ const CourseDetailPage = () => {
           setCourse(courseData);
           
           // Fetch reviews separately
-          const reviewsResponse = await axios.get(`http://localhost:5000/api/courses/${id}`);
+          const reviewsResponse = await axios.get(`${config.API_BASE_URL}/api/courses/${id}`);
           if (reviewsResponse.data.reviews) {
             setReviews(reviewsResponse.data.reviews);
           }

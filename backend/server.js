@@ -16,12 +16,13 @@ const Notification = require('./models/Notification');
 
 const app = express();
 
-// Middleware
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: [
+    'http://localhost:3000',
+    'https://YOUR-FRONTEND-URL.onrender.com'  // Add this after deploying frontend
+  ],
   credentials: true
 }));
-app.use(express.json());
 
 // Helper function to create notifications
 const createNotification = async (userId, type, title, message, data = {}) => {

@@ -15,11 +15,12 @@ const Review = require('./models/Review');
 const Notification = require('./models/Notification');
 
 const app = express();
+app.use(express.json());
 
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://coursehub-frontend-fcfp.onrender.com/' // Add after frontend deployed
+    'https://coursehub-frontend-fcfp.onrender.com' // Add after frontend deployed
   ],
   credentials: true
 }));

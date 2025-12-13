@@ -19,7 +19,7 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://YOUR-FRONTEND-URL.onrender.com' // Add after frontend deployed
+    'https://coursehub-frontend-fcfp.onrender.com/' // Add after frontend deployed
   ],
   credentials: true
 }));

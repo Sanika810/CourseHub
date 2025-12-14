@@ -29,3 +29,6 @@
 - Backend: Node.js, Express, MongoDB
 - Frontend: React, React Router
 - Authentication: JWT
+
+# deployed on render
+https://coursehub-frontend-fcfp.onrender.com
